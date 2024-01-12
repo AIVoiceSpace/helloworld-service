@@ -39,7 +39,7 @@
         <!-- custom properties go here -->
         <spring-cloud-starter-aws.version>2.4.4</spring-cloud-starter-aws.version>
         <micrometer-registry-datadog.version>1.12.0</micrometer-registry-datadog.version>
-        <micrometer-registry-statsd.version>1.12.0</micrometer-registry-statsd.version>
+        <micrometer-registry-statsd.version>1.12.2</micrometer-registry-statsd.version>
         <!-- /custom properties -->
 
     </properties>

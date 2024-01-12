@@ -1,0 +1,34 @@
+name: Main Branch Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: ci-tests-${{ github.ref }}-1
+  cancel-in-progress: true
+
+jobs:
+  call-get-version:
+    uses: aivoicespace/service-workflow/.github/workflows/get-version.yaml@main
+    secrets:
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+
+  call-compile:
+    uses: AIVoiceSpace/service-workflow/.github/workflows/compile.yaml@main
+
+  call-build-image-with-push:
+    needs:
+      - call-get-version
+    uses: AIVoiceSpace/service-workflow/.github/workflows/build-image-with-push.yaml@main
+    with:
+      tag: ${{ needs.call-get-version.outputs.version }}
+      image-name: fuelandfitness
+      AWS_REGION_ID: ${{ vars.AWS_REGION_ID }}
+      AWS_ACCOUNT_ID: ${{ vars.AWS_ECR_ACCOUNT_ID }}
+    secrets:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+

@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: helloworld
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+  metrics:
+    export:
+      statsd:
+        enabled: true
+        flavor: datadog
+        host: localhost
+        port: 8125
+    enable:
+      all: false
+      jvm: false
+      helloworld: true
+    tags:
+      application: "helloworld"
+      env: ${spring.profiles.active}
+      domain: "helloworld"
+      service: "helloworld"
+logging:
+  level:
+    root: INFO
+    com.aivoicespace: DEBUG
+springdoc:
+  api-docs:
+    path: /api-docs

@@ -1,0 +1,52 @@
+name: Feature Branch Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches-ignore:
+      - main
+
+concurrency:
+  group: feature-${{ github.ref }}-1
+  cancel-in-progress: true
+
+jobs:
+
+  get-tag:
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.set-tag.outputs.tag }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+
+      - name: Extract branch name
+        shell: bash
+        run: echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/} | sed 's/\//_/g')" >> $GITHUB_ENV
+
+      - name: Set tag
+        id: set-tag
+        run: |
+          echo "Setting up the tag..."
+          LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
+          CURRENT_MILLIS=$(date +%s%3N)  # Get current time in milliseconds
+          TAG="${LATEST_TAG}-${BRANCH_NAME}-${GITHUB_ACTOR}-${CURRENT_MILLIS}"
+          echo "Generated tag: $TAG"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+  call-compile:
+    uses: AIVoiceSpace/service-workflow/.github/workflows/compile.yaml@main
+
+  call-build-image:
+    needs: get-tag
+    uses: AIVoiceSpace/service-workflow/.github/workflows/build-image-with-push.yaml@main
+    with:
+      tag: ${{ needs.get-tag.outputs.tag }}
+      image-name: fuelandfitness
+      AWS_REGION_ID: ${{ vars.AWS_REGION_ID }}
+      AWS_ACCOUNT_ID: ${{ vars.AWS_ECR_ACCOUNT_ID }}
+    secrets:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

@@ -25,7 +25,7 @@ jobs:
     uses: AIVoiceSpace/service-workflow/.github/workflows/build-image-with-push.yaml@main
     with:
       tag: ${{ needs.call-get-version.outputs.version }}
-      image-name: fuelandfitness
+      image-name: helloworld
       AWS_REGION_ID: ${{ vars.AWS_REGION_ID }}
       AWS_ACCOUNT_ID: ${{ vars.AWS_ECR_ACCOUNT_ID }}
     secrets:

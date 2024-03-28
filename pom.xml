@@ -17,7 +17,7 @@
         <java.version>17</java.version>
         <org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
         <javafaker.version>1.0.2</javafaker.version>
-        <spring-cloud.version>2023.0.0</spring-cloud.version>
+        <spring-cloud.version>2023.0.1</spring-cloud.version>
         <logstash-logback-encoder.version>7.4</logstash-logback-encoder.version>
         <log4j2.version>2.17.1</log4j2.version>
         <springdoc-openapi-ui.version>1.7.0</springdoc-openapi-ui.version>
